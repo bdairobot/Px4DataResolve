@@ -1,0 +1,70 @@
+ATT_qw
+ATT_qx
+ATT_qy
+ATT_qz
+ATT_Roll
+ATT_Pitch
+ATT_Yaw
+ATT_RollRate
+ATT_PitchRate
+ATT_YawRate
+ATSP_RollSP
+ATSP_PitchSP
+ATSP_YawSP
+ATSP_ThrustSP
+ATSP_qw
+ATSP_qx
+ATSP_qy
+ATSP_qz
+SENS_BaroPres
+SENS_BaroAlt
+LPOS_X
+LPOS_Y
+LPOS_Z
+LPOS_VX
+LPOS_VY
+LPOS_VZ
+LPOS_RLat	#refererence
+LPOS_RLon
+LPOS_RAlt
+LPOS_EPH	#local position eph
+LPOS_EPV	
+LPSP_X		#local position setpoint x
+LPSP_Y
+LPSP_Z
+LPSP_Yaw
+LPSP_VX
+LPSP_VY
+LPSP_VZ
+LPSP_AX
+LPSP_AY
+LPSP_AZ
+########
+GPS_GPSTime
+GPS_Fix
+GPS_EPH
+GPS_EPV
+GPS_Lat
+GPS_Lon
+GPS_Alt
+GPS_VelN
+GPS_VelE
+GPS_VelD
+########
+GPOS_Lat	#global position latitude
+GPOS_Lon	#global position lontitude
+GPOS_Alt
+GPOS_VelN
+GPOS_VelE
+GPOS_VelD
+GPOS_EPH
+GPOS_EPV
+########
+GPSP_NavState
+GPSP_Lat
+GPSP_Lon	#global position setpotin lontitude
+GPSP_Alt
+GPSP_Yaw
+########
+LAND_Landed
+TIME_StartTime
