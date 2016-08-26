@@ -214,7 +214,7 @@ if ~isequal(pathName,0) && ~isequal(fileNameG,0)
 
             end
 
-            Hints(handles,'Conversion finished !');
+            Hints(handles,[handles.fileName,'Conversion finished !']);
 
             %delete .csv file only data is .px4log and save .mat file
             save([pathName,fileName(1:end-7),'.mat'],'px4_data');
