@@ -75,7 +75,8 @@ handles.InitPos.optGroupPos = get(handles.OptionGroup,'Position');
 handles.InitPos.varGroupGPos = get(handles.VariableGroup,'Position');
 handles.InitPos.plotGroupPos = get(handles.AxesGroup,'Position');
 
-handles.plotFileName = '../plot/default.plot';
+handles.plotFileNamePath = '../plot/default.list';
+handles.plotVarListPath = '../plot/default.plot';
 
 % Update handles structure
 guidata(hObject, handles);
@@ -162,7 +163,8 @@ if ~isequal(pathName,0) && ~isequal(fileNameG,0)
         guidata(hObject, handles);
         hMsgbox = msgbox('Loading file please wait !','modal');
 
-        plotList = extractPlotList(handles.plotFileName);
+        plotList = extractPlotList(handles.plotFileNamePath);
+        
         step = getStep(handles);
 
         if ~strcmp(fileName(end-3:end),'.csv') && ~strcmp(fileName(end-3:end),'.mat')
@@ -308,10 +310,139 @@ if ~isequal(pathName,0) && ~isequal(fileNameG,0)
     
     Hints(handles,[handles.fileName,'variable inport finished !']);
     handles.fileImported = 1;
+    
+    plotDefaultVarList(handles, handles.plotVarListPath);
+    
+    pbtClean_Callback(handles.pbtClean, eventdata, handles);
     guidata(hObject, handles);
 else
     %
 end
+
+function plotDefaultVarList(handles, plotVarListPath)
+plotNameList = importdata(plotVarListPath);
+lengthList = length(plotNameList);
+px4_data = handles.px4_data;
+
+lastMode = [];
+
+for i = 1:lengthList
+    plotName = plotNameList{i};
+    if isempty(plotName)
+        continue;
+    end
+    
+    index = 1;
+    while strcmp(plotName(index),char(9)) || strcmp(plotName(index),' ');
+        index = index + 1;
+    end
+    
+    plotName = plotName(index:end);
+    
+    if ~strcmp(plotName(1),'#')
+        index = findstr(plotName,'#');  %if there are some comments
+        if isempty(index)
+            index = length(plotName);
+        else
+            index = index-1;
+            plotName = plotName(1:index);
+        end
+        
+        while strcmp(plotName(index),char(9)) || strcmp(plotName(index),' ');
+            index = index - 1;
+        end
+        plotName = plotName(1:index);
+    else
+        continue;
+    end
+    
+    switch plotName
+        case 'X_T:' 
+            lastMode = 'X_T'; continue;
+        case 'X_Y:'
+            lastMode = 'X_Y'; continue;
+        case 'X-Y:'
+            lastMode = 'X-Y'; continue;
+        case 'PoP'
+            pbtPopFigure_Callback(handles.pbtPopFigure, [], handles);
+            handles.tempDefaultVariable = [];
+            continue;
+    end
+    
+    colorList = handles.colorList;
+    if ~isfield(handles,'lastColorIndex')
+        lastColorIndex = 0;
+    else
+        lastColorIndex = handles.lastColorIndex;
+    end
+    
+    if strcmp(lastMode, 'X_T')
+        set(handles.popuMode,'Value',1);
+        if isfield(px4_data,plotName)
+            var = eval(['px4_data.',plotName,';']);
+            lastColorIndex = mod((lastColorIndex),length(colorList)) + 1;
+            handles.lastColorIndex = lastColorIndex; %used to store the index of color in colorList;
+
+            if strcmp(plotName,'TIME_Period');
+                line('Parent',handles.AxesPlot,...
+                                 'Color',colorList(lastColorIndex,1:end),...
+                                 'XData',px4_data.TIME_StartTime*1e-6,...
+                                 'YData',var,'Tag',plotName,...
+                                 'Marker','.',...
+                                 'LineStyle','none');
+            else
+                line('Parent',handles.AxesPlot,...
+                                 'Color',colorList(lastColorIndex,1:end),...
+                                 'XData',px4_data.TIME_StartTime*1e-6,...
+                                 'YData',var,'Tag',plotName);
+            end
+        else
+            warndlg(['There is no variable ',plotName, ' in px4_data'],'Warnning!','modal');
+        end
+    elseif strcmp(lastMode, 'X_Y')
+        set(handles.popuMode,'Value',2);
+        plotName = regexp(plotName, ',', 'split');
+        
+        if isfield(px4_data,plotName{1}) && isfield(px4_data,plotName{2})
+           lastColorIndex = mod((lastColorIndex),length(colorList)) + 1;
+           handles.lastColorIndex = lastColorIndex; 
+           cutChar = '__';
+            
+           xValue = eval(['px4_data.',plotName{1},';']);
+           yValue = eval(['px4_data.',plotName{2},';']);
+           line('Parent',handles.AxesPlot,...
+                'Color',colorList(lastColorIndex,1:end),...
+                'XData',xValue,...
+                'YData',yValue,...
+                'Tag',[plotName{1},cutChar,plotName{2}]);
+        else
+            warndlg(['There is no variable ',plotName{1}, ' or ',plotName{2}, ' in px4_data'],'Warnning!','modal');
+        end
+        
+    elseif strcmp(lastMode, 'X-Y')
+        set(handles.popuMode,'Value',3);
+        plotName = regexp(plotName, ',', 'split');
+        if isfield(px4_data,plotName{1}) && isfield(px4_data,plotName{2})
+           lastColorIndex = mod((lastColorIndex),length(colorList)) + 1;
+           handles.lastColorIndex = lastColorIndex; 
+           cutChar = ' — ';
+            
+           yValue = eval(['px4_data.',plotName{1},'-','px4_data.',plotName{2},';']);
+           xValue = px4_data.TIME_StartTime*1e-6;
+           line('Parent',handles.AxesPlot,...
+                'Color',colorList(lastColorIndex,1:end),...
+                'XData',xValue,...
+                'YData',yValue,...
+                'Tag',[plotName{1},cutChar,plotName{2}]);     
+        else
+            warndlg(['There is no variable ',plotName{1}, ' or ',plotName{2}, ' in px4_data'],'Warnning!','modal');
+        end
+    end
+end
+
+
+
+
 
 function step = getStep(handles)
 value = get(handles.popuStep,'Value');
@@ -328,14 +459,14 @@ function tagPlotList_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 [fileName, pathName] = uigetfile(...
-        {'*.plot',...
-        'Data Files (*.plot)'},...
+        {'*.list',...
+        'Data Files (*.list)'},...
         'Open file',...
         '../plot');
 
 if ~isequal(pathName,0) && ~isequal(fileName,0)
     fileIndex = strcat(pathName,fileName);
-    handles.plotFileName = fileIndex;
+    handles.plotFileNamePath = fileIndex;
 end
 Hints(handles,['Plot list is ',fileName]);
 
@@ -343,13 +474,17 @@ guidata(hObject, handles);
 
 
 %used to extract optional plot name list
-function plotList = extractPlotList(plotFileName)
-plotNameList = importdata(plotFileName);
+function plotList = extractPlotList(plotFileNamePath)
+plotNameList = importdata(plotFileNamePath);
 plotList = [];
 templen = 1;
 
 for i = 1:length(plotNameList)
     defalutPlotValue = plotNameList{i};
+    
+    if isempty(defalutPlotValue)
+        continue;
+    end
     
     index = 1;
     while strcmp(defalutPlotValue(index),char(9)) || strcmp(defalutPlotValue(index),' ');
@@ -843,17 +978,12 @@ function pbtPopFigure_Callback(hObject, eventdata, handles)
 % hObject    handle to pbtPopFigure (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if ~isfield(handles,'figureNum')
-    figureNum = 1;
-else
-    figureNum = handles.figureNum + 1;
-end
-handles.figureNum = figureNum;
+
 figPopPos = [200 100 640 350];
 
 hFigure = figure('Color',handles.colorBackground,...
                         'HandleVisibility','on',...
-                        'Name',['Px4DataResolve: PopFigure',num2str(figureNum)],...
+                        'Name',['Px4DataResolve: PopFigure'],...
                         'PaperPosition',[0 0 1 1],...
                         'Position',figPopPos,...
                         'Tag','popFigure',...
