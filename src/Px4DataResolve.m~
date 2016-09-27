@@ -333,12 +333,9 @@ for i = 1:lengthList
     end
     
     index = 1;
-    while strcmp(plotName(index),char(9)) || strcmp(plotName(index),' ') &&(index < length(plotName))
+    while strcmp(plotName(index),char(9)) || strcmp(plotName(index),' ');
+        
         index = index + 1;
-    end
-    
-    if (index >= length(plotName))
-        continue;
     end
     
     plotName = plotName(index:end);

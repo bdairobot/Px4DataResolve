@@ -1,8 +1,6 @@
 ATT_qw	    		#attitude infomation
 ATT_qx
 ATT_qy
-
-
 ATT_qz
 ATT_Roll
 ATT_Pitch
@@ -28,9 +26,9 @@ IMU_AccZ
 IMU_GyroX
 IMU_GyroY
 IMU_GyroZ
-IMU_MagX
-IMU_MagY
-IMU_MagZ
+#IMU_MagX
+#IMU_MagY
+#IMU_MagZ
 #IMU_tA
 #IMU_tG
 #IMU_tM
@@ -58,7 +56,7 @@ IMU_MagZ
 #IMU2_tA
 #IMU2_tG
 #IMU2_tM
-SENS_BaroPres
+#SENS_BaroPres
 SENS_BaroAlt
 #SENS_BaroTemp
 #SENS_DiffPres
@@ -76,13 +74,13 @@ LPOS_Z
 LPOS_VX
 LPOS_VY
 LPOS_VZ
-LPOS_RLat	#refererence
-LPOS_RLon
-LPOS_RAlt
+#LPOS_RLat	#refererence
+#LPOS_RLon
+#LPOS_RAlt
 #LPOS_PFlg
 #LPOS_GFlg
-LPOS_EPH	#local position eph
-LPOS_EPV	
+#LPOS_EPH	#local position eph
+#LPOS_EPV	
 LPSP_X		#local position setpoint x
 LPSP_Y
 LPSP_Z
@@ -93,10 +91,10 @@ LPSP_VZ
 LPSP_AX
 LPSP_AY
 LPSP_AZ
-GPS_GPSTime
+#GPS_GPSTime
 GPS_Fix
-GPS_EPH
-GPS_EPV
+#GPS_EPH
+#GPS_EPV
 GPS_Lat
 GPS_Lon
 GPS_Alt
@@ -104,7 +102,7 @@ GPS_VelN
 GPS_VelE
 GPS_VelD
 #GPS_Cog
-#GPS_nSat
+GPS_nSat
 #GPS_SNR
 #GPS_N
 #GPS_J
@@ -154,7 +152,7 @@ RC_C3
 RC_C4
 RC_C5
 RC_C6
-RC_C7
+#RC_C7
 #RC_C8
 #RC_C9
 #RC_C10
@@ -182,9 +180,9 @@ RC_C7
 #AIRS_IndSpeed
 #AIRS_TrueSpeed
 #AIRS_AirTemp
-#ARSP_RollRateSP
-#ARSP_PitchRateSP
-#ARSP_YawRateSP
+ARSP_RollRateSP
+ARSP_PitchRateSP
+ARSP_YawRateSP
 #FLOW_ID
 #FLOW_RawX
 #FLOW_RawY
@@ -203,8 +201,8 @@ GPOS_Alt
 GPOS_VelN
 GPOS_VelE
 GPOS_VelD
-GPOS_EPH
-GPOS_EPV
+#GPOS_EPH
+#GPOS_EPV
 #GPOS_TALT
 GPSP_NavState
 GPSP_Lat
@@ -537,6 +535,15 @@ GPSP_Yaw
 #RPL6_trAsp
 LAND_Landed
 #LOAD_CPU
+MOSP_index
+MOSP_mosp0
+MOSP_mosp1
+MOSP_mosp2
+MOSP_mosp3
+MOSP_mosp4
+MOSP_mosp5
+MOSP_mosp6
+MOSP_mosp7
 TIME_StartTime
 #VER_Arch
 #VER_FwGit

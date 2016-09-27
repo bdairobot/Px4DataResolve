@@ -534,6 +534,15 @@ RPL6_inAsp
 RPL6_trAsp
 LAND_Landed
 LOAD_CPU
+MOSP_index
+MOSP_mosp0
+MOSP_mosp1
+MOSP_mosp2
+MOSP_mosp3
+MOSP_mosp4
+MOSP_mosp5
+MOSP_mosp6
+MOSP_mosp7
 TIME_StartTime
 VER_Arch
 VER_FwGit
