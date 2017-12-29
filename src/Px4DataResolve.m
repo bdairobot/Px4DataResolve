@@ -175,7 +175,10 @@ if ~isequal(pathName,0) && ~isequal(fileNameG,0)
             %if there are hints: can not find python, please install python2.*
             %first, then add python path into System PATH
             s = system( sprintf('python sdlog2_dump.py "%s" -f "%s" -t"%s" -d"%s" -n"%s"', fileIndex, data_file, time_field, delim, csv_null) );
-
+            if s == 1
+                hResolveErrorbox = errordlg('Mission Python','Error!','modal');
+                return;
+            end
             px4_data = [];
             try
                 temp_px4_data = importdata(data_file);
@@ -188,7 +191,7 @@ if ~isequal(pathName,0) && ~isequal(fileNameG,0)
                 for i = 1:n
                     % any(), any 1 is exist
                     if any(strcmp(temp_px4_data.textdata{1,i},plotList))
-                        if step == 1
+                        if step == 1    %%why?
                             temp_data = str2double(temp_px4_data.textdata(2:end,i));
                             eval(['px4_data.',temp_px4_data.textdata{1,i},'= temp_data;']);
                         else
@@ -219,6 +222,7 @@ if ~isequal(pathName,0) && ~isequal(fileNameG,0)
             Hints(handles,[handles.fileName,'Conversion finished !']);
 
             %delete .csv file only data is .px4log and save .mat file
+			delete([pathName,fileName(1:end-7),'.csv']);
             save([pathName,fileName(1:end-7),'.mat'],'px4_data');
 
         elseif strcmp(fileName(end-3:end),'.csv')   
@@ -271,6 +275,44 @@ if ~isequal(pathName,0) && ~isequal(fileNameG,0)
         TIME_Period(end) = nan;
         px4_data.TIME_Period = TIME_Period;
     end
+    
+    %%%%%%%%%%%% In case that the init lpsp_x is too large
+    if isfield(px4_data,'LPSP_X')
+        for i = 1:length(px4_data.LPSP_X)
+            if isnan(px4_data.LPSP_X(i))
+                continue;
+            elseif abs(px4_data.LPSP_X(i)) > 1e2
+               px4_data.LPSP_X(i) = px4_data.LPOS_X(i);
+            else
+               break;
+            end
+        end
+    end
+        
+    if isfield(px4_data,'LPSP_Y')
+        for i = 1:length(px4_data.LPSP_Y)
+            if isnan(px4_data.LPSP_Y(i))
+                continue;
+            elseif abs(px4_data.LPSP_Y(i)) > 1e2
+               px4_data.LPSP_Y(i) = px4_data.LPOS_Y(i);
+            else
+               break;
+            end
+        end
+    end
+    
+    if isfield(px4_data,'LPSP_Z')
+        for i = 1:length(px4_data.LPSP_Z)
+            if isnan(px4_data.LPSP_Z(i))
+                continue;
+            elseif abs(px4_data.LPSP_Z(i)) > 1e2
+               px4_data.LPSP_Z(i) = px4_data.LPOS_Z(i);
+            else
+               break;
+            end
+        end
+    end
+    %%%%%%%%%%%%%%%%%%%%%%%%
     
     assignin('base', 'px4_data', px4_data); %%Send to workspace
     %extract double variable form px4_data
@@ -626,19 +668,19 @@ end
 
 handles.nameGroup = hNameGroup;
 nameGroupPos = get(hNameGroup,'Position');%adjust
-if nameGroupPos(2)+nameGroupPos(4)<= newTopNameGroupPos(2) || newNameGroupPos(2)+newNameGroupPos(4) >= varNums*radioHeight
+if nameGroupPos(2)+nameGroupPos(4)<= newTopNameGroupPos(2) %|| newNameGroupPos(2)+newNameGroupPos(4) >= varNums*radioHeight
     set(hNameGroup,'Position',newNameGroupPos);
     
-    for i = 1:varNums
-        radioPos = [10,...
-                    newNameGroupPos(4) - i*radioHeight,...
-                    newNameGroupPos(3) - 20,...
-                    radioHeight];
-        hRadio = findall(hNameGroupAll,...
-                'String',varNames{i},'Style','radiobutton');
-
-        set(hRadio,'Parent',hNameGroup,'Position',radioPos,'Visible','on');
-    end
+%     for i = 1:varNums
+%         radioPos = [10,...
+%                     newNameGroupPos(4) - i*radioHeight,...
+%                     newNameGroupPos(3) - 20,...
+%                     radioHeight];
+%         hRadio = findall(hNameGroupAll,...
+%                 'String',varNames{i},'Style','radiobutton');
+% 
+%         set(hRadio,'Parent',hNameGroup,'Position',radioPos,'Visible','on');
+%     end
 end
 
 if ~isempty(hTopNameGroup)

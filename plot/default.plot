@@ -1,29 +1,6 @@
 ################## X_T ##################
-X_T:	#plot value and time, if you don't want plot this section, add "#" before X_T
-LPOS_VX
-LPSP_VX
-LPOS_VY
-LPSP_VY
-RC_C4
-PoP
+#X_T:	#plot value and time, if you don't want plot this section, add "#" before X_T
 
-
-LPOS_X #plot local position x
-LPSP_X #plot local position setpoint x
-LPOS_Y	#plot local position y
-LPSP_Y	#plot local position setpoint y
-RC_C4
-PoP
-
-LPOS_VZ
-LPSP_VZ
-RC_C4
-PoP
-
-LPOS_Z	#plot local position y
-LPSP_Z	#plot local position setpoint y
-RC_C4
-PoP
 
 #ATT_Roll
 #ATSP_RollSP
